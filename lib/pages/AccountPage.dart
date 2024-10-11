@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lab1/components/DefaultContainer.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class AccountPage extends StatelessWidget {
+  const AccountPage({super.key});
 
   @override
   Widget build(BuildContext context) {
