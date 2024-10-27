@@ -4,18 +4,19 @@ import 'package:lab1/components/FormTextInput.dart';
 import 'package:lab1/database/tables/services/UserService.dart';
 import 'package:lab1/pages/MainPage.dart';
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+class RegisterForm extends StatefulWidget {
+  const RegisterForm({super.key});
 
   @override
-  State<LoginForm> createState() => _LoginFormState();
+  State<RegisterForm> createState() => _RegisterFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class _RegisterFormState extends State<RegisterForm> {
   final _formKey = GlobalKey<FormState>();
   final service = UserService();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _nameController = TextEditingController();
   String? error;
 
   String? emailValidator(String? value) {
@@ -39,14 +40,29 @@ class _LoginFormState extends State<LoginForm> {
     return null;
   }
 
+  String? nameValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter name';
+    }
+
+    final nameValid = RegExp('[a-zA-Z]').hasMatch(value);
+
+    if (!nameValid) {
+      return 'Name may only contain letters';
+    }
+
+    return null;
+  }
+
   Future<void> submit() async {
     if (_formKey.currentState!.validate()) {
       try {
-        final user = await service.login(
+        final user = await service.register(
           _emailController.value.text,
           _passwordController.value.text,
+          _nameController.value.text,
         );
-        print(user);
+        print(user.toMap());
         Navigator.pushNamed(
           context,
           '/main',
@@ -77,6 +93,12 @@ class _LoginFormState extends State<LoginForm> {
             ),
             const SizedBox(height: 30),
             FormTextInput(
+              validator: nameValidator,
+              labelText: 'Name',
+              controller: _nameController,
+            ),
+            const SizedBox(height: 30),
+            FormTextInput(
               isObscure: true,
               validator: passwordValidator,
               labelText: 'Password',
@@ -84,15 +106,14 @@ class _LoginFormState extends State<LoginForm> {
             ),
             const SizedBox(height: 30),
             CustomTextButton(
-              buttonText: 'Login',
+              buttonText: 'Register',
               padding: const EdgeInsets.symmetric(horizontal: 50),
               onTap: submit,
             ),
-            const SizedBox(height: 30),
             if (error != null)
               Text(
                 error!,
-                style: TextStyle(color: Colors.red.shade800),
+                style: TextStyle(color: Colors.red.shade300),
               ),
           ],
         ),
