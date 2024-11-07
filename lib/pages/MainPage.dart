@@ -3,6 +3,12 @@ import 'package:lab1/pages/AccountPage.dart';
 import 'package:lab1/pages/BuyTicketPage.dart';
 import 'package:lab1/pages/Home.dart';
 
+class ScreenArguments {
+  final int id;
+
+  ScreenArguments(this.id);
+}
+
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -27,6 +33,10 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
+
+    print(args.id);
+
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
