@@ -4,7 +4,7 @@ import 'package:lab1/components/DefaultContainer.dart';
 import 'package:lab1/components/Input.dart';
 import 'package:lab1/database/tables/services/UserService.dart';
 import 'package:lab1/model/user.dart';
-import 'package:lab1/pages/MainPage.dart';
+import 'package:lab1/services/auth_service.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({int? userId, super.key});
@@ -18,19 +18,27 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
+    final AuthService authService = AuthService();
     final _nameController = TextEditingController();
     String? error;
 
-    Future<User> getUser() async {
-      var user = await service.getUserById(args.id);
-      _nameController.text = user.name;
-      return user;
+    Future<User?> getUser() async {
+      try {
+        final id = await authService.getUserId();
+
+        var user = await service.getUserById(id);
+        _nameController.text = user.name;
+        return user;
+      } catch (e) {
+        Navigator.pushNamed(context, "/");
+      }
+      return null;
     }
 
     Future<void> submit() async {
       try {
-        service.updateUser(args.id, _nameController.text);
+        final id = await authService.getUserId();
+        service.updateUser(id, _nameController.text);
       } catch (e) {
         setState(() {
           error = e.toString();
@@ -39,9 +47,18 @@ class _AccountPageState extends State<AccountPage> {
       }
     }
 
+    Future<void> logout() async {
+      try {
+        Navigator.pushNamed(context, '/');
+        await authService.saveUserId(0);
+      } catch (e) {
+        Navigator.pushNamed(context, '/');
+      }
+    }
+
     return FutureBuilder(
       future: getUser(),
-      builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: Text('Please wait its loading...'));
         } else {
@@ -60,6 +77,27 @@ class _AccountPageState extends State<AccountPage> {
                     buttonText: 'Update',
                     padding: const EdgeInsets.symmetric(horizontal: 50),
                     onTap: submit,
+                  ),
+                  const SizedBox(height: 30),
+                  CustomTextButton(
+                    buttonText: 'Log out',
+                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    onTap: () => showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Are you sure you want to logout?'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: logout,
+                            child: const Text('Yes'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'Cancel'),
+                            child: const Text('No'),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 30),
                   if (error != null)

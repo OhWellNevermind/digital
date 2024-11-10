@@ -7,8 +7,10 @@ environment:
   sdk: ^3.5.3
 
 dependencies:
+  connectivity_plus: ^6.1.0
   flutter:
     sdk: flutter
+  fluttertoast: ^8.2.8
   shared_preferences: ^2.3.2
   sqflite: ^2.4.0
 
