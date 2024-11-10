@@ -81,6 +81,7 @@ class _TicketsCountSelectorState extends State<TicketsCountSelector> {
                     width: 80,
                     height: 44,
                     child: TextField(
+                      keyboardType: TextInputType.phone,
                       focusNode: _focus,
                       maxLength: 2,
                       decoration: InputDecoration(
