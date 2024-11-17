@@ -14,14 +14,15 @@ class User {
   final String name;
   final String password;
   final String? createdAt;
+  final String? token;
 
-  User({
-    this.id,
-    required this.email,
-    required this.name,
-    required this.password,
-    this.createdAt,
-  });
+  User(
+      {this.id,
+      required this.email,
+      required this.name,
+      required this.password,
+      this.createdAt,
+      this.token});
 
   Map<String, dynamic> toMap() {
     return {
@@ -56,6 +57,30 @@ class User {
       name: name ?? this.name,
       password: password ?? this.password,
       createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  factory User.fromGetUserJson(Map<String, dynamic> json) {
+    final user = json['user'];
+
+    return User(
+      id: user['id'] as int,
+      email: user['email'] as String,
+      name: user['name'] as String,
+      password: '',
+    );
+  }
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    final user = json['user'];
+    final token = user['token'];
+
+    return User(
+      id: user['id'] as int,
+      email: user['email'] as String,
+      name: user['username'] as String,
+      password: '',
+      token: token as String,
     );
   }
 }

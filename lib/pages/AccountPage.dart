@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lab1/api/UserApi.dart';
 import 'package:lab1/components/CustomTextButton.dart';
 import 'package:lab1/components/DefaultContainer.dart';
 import 'package:lab1/components/Input.dart';
@@ -26,10 +27,12 @@ class _AccountPageState extends State<AccountPage> {
       try {
         final id = await authService.getUserId();
 
-        var user = await service.getUserById(id);
+        var user = await getUserById(id);
+        print(user);
         _nameController.text = user.name;
         return user;
       } catch (e) {
+        print(e);
         Navigator.pushNamed(context, "/");
       }
       return null;

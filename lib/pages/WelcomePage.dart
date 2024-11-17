@@ -24,7 +24,6 @@ class _WelcomePageState extends State<WelcomePage> {
     super.initState();
 
     _streamSubscription = _connectivity.onConnectivityChanged.listen((result) {
-      print(result);
       if (result[0] == ConnectivityResult.none) {
         Fluttertoast.showToast(
           msg: "You're disconnected from internet",

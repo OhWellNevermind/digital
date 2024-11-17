@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:lab1/api/UserApi.dart';
 import 'package:lab1/components/CustomTextButton.dart';
 import 'package:lab1/components/FormTextInput.dart';
 import 'package:lab1/database/tables/services/UserService.dart';
@@ -22,6 +23,7 @@ class _LoginFormState extends State<LoginForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final Connectivity _connectivity = Connectivity();
+  // ignore: strict_raw_type
   late StreamSubscription _streamSubscription;
 
   bool isDisabled = false;
@@ -73,9 +75,10 @@ class _LoginFormState extends State<LoginForm> {
 
   Future<void> submit() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+
     if (_formKey.currentState!.validate()) {
       try {
-        final user = await service.login(
+        final user = await loginUser(
           _emailController.value.text,
           _passwordController.value.text,
         );

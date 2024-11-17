@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:lab1/api/UserApi.dart';
 import 'package:lab1/components/CustomTextButton.dart';
 import 'package:lab1/components/FormTextInput.dart';
 import 'package:lab1/database/tables/services/UserService.dart';
@@ -90,7 +91,7 @@ class _RegisterFormState extends State<RegisterForm> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     if (_formKey.currentState!.validate()) {
       try {
-        final user = await service.register(
+        final user = await registerUser(
           _emailController.value.text,
           _passwordController.value.text,
           _nameController.value.text,
@@ -106,6 +107,7 @@ class _RegisterFormState extends State<RegisterForm> {
           fontSize: 16.0,
         );
         await prefs.setInt('userId', user.id!);
+        await prefs.setString('token', user.token!);
         Navigator.pushNamed(
           context,
           '/main',
